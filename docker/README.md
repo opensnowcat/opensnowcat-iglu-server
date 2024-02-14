@@ -9,7 +9,6 @@ Launch the stack with:
 
 ```bash
 docker-compose up -d
-
 ```
 
 ### API keys
@@ -25,7 +24,6 @@ You can override this API key by setting the `IGLU_MASTER_API_KEY` environment v
 
 ```bash
 IGLU_MASTER_API_KEY=35cba2e2-7f16-422d-b780-e43b84270fcc docker-compose up -d
-
 ```
 
 Or alternatively edit the `superApiKey` field in [the sample hocon file](../config/config.minimal.hocon).
