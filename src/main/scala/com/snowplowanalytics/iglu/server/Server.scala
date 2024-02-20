@@ -33,13 +33,13 @@ import fs2.concurrent.SignallingRef
 
 import org.http4s.{Headers, HttpApp, HttpRoutes, MediaType, Method, Request, Response, Status}
 import org.http4s.headers.`Content-Type`
-import org.http4s.client.blaze.BlazeClientBuilder
+import org.http4s.blaze.client.BlazeClientBuilder
 import org.http4s.server.Router
-import org.http4s.server.blaze.BlazeServerBuilder
+import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.server.middleware.{AutoSlash, CORS, Logger}
 import org.http4s.syntax.string._
 import org.http4s.server.{defaults => Http4sDefaults}
-import org.http4s.util.{CaseInsensitiveString => CIString}
+import org.typelevel.ci.{CIString => CIString}
 
 import org.http4s.rho.{AuthedContext, RhoMiddleware}
 import org.http4s.rho.bits.PathAST.{PathMatch, TypedPath}
@@ -58,6 +58,7 @@ import com.snowplowanalytics.iglu.server.storage.Storage
 import com.snowplowanalytics.iglu.server.service._
 
 import generated.BuildInfo.version
+import org.typelevel.ci.{ CIString, _ }
 
 object Server {
 
@@ -147,7 +148,7 @@ object Server {
       case (endpoint, route) =>
         // Apply middleware
         val httpRoutes        = CachingMiddleware(cache)(BadRequestHandler(corsPolicy(AutoSlash(route))))
-        val redactHeadersWhen = (Headers.SensitiveHeaders + "apikey".ci).contains _
+        val redactHeadersWhen = (Headers.SensitiveHeaders + ci"apikey").contains _
         (endpoint, Logger.httpRoutes[IO](true, true, redactHeadersWhen, Some(logger.debug(_)))(httpRoutes))
     }
   }
