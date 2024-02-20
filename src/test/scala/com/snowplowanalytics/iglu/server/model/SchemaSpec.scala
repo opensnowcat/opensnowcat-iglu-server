@@ -133,8 +133,8 @@ class SchemaSpec extends org.specs2.Specification {
         case Schema
               .SchemaBody
               .SelfDescribing(
-              SelfDescribingSchema(SchemaMap(`schemaKey1`), `bodyOnlyInput`),
-              SupersedingInfo(None, Nil)
+                SelfDescribingSchema(SchemaMap(`schemaKey1`), `bodyOnlyInput`),
+                SupersedingInfo(None, Nil)
               ) =>
           ok
         case e => ko(s"Unexpected decoded value $e")

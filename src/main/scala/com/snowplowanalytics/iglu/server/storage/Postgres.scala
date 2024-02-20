@@ -42,14 +42,14 @@ class Postgres[F[_]](xa: Transactor[F], logger: Logger[F]) extends Storage[F] { 
     Stream.eval(logger.debug(s"getSchemasByVendor $vendor")) *>
       Postgres.Sql.getSchemasByVendor(vendor).stream.transact(xa)
 
-  override def getSchemasByName(vendor: String, name: String)(
-    implicit F: Bracket[F, Throwable]
+  override def getSchemasByName(vendor: String, name: String)(implicit
+    F: Bracket[F, Throwable]
   ): Stream[F, Schema] =
     Stream.eval(logger.debug(s"getSchemasByName $vendor/$name")) *>
       Postgres.Sql.getSchemasByName(vendor, name).stream.transact(xa)
 
-  override def getSchemasByModel(vendor: String, name: String, model: Int)(
-    implicit F: Bracket[F, Throwable]
+  override def getSchemasByModel(vendor: String, name: String, model: Int)(implicit
+    F: Bracket[F, Throwable]
   ): Stream[F, Schema] =
     Stream.eval(logger.debug(s"getSchemasByModel $vendor/$name/$model")) *>
       Postgres.Sql.getSchemasByModel(vendor, name, model).stream.transact(xa)
@@ -61,8 +61,8 @@ class Postgres[F[_]](xa: Transactor[F], logger: Logger[F]) extends Storage[F] { 
     logger.debug(s"getPermission") *>
       Postgres.Sql.getPermission(apikey).option.transact(xa)
 
-  def addSchema(schemaMap: SchemaMap, body: Json, isPublic: Boolean, supersedes: List[SchemaVer.Full])(
-    implicit C: Clock[F],
+  def addSchema(schemaMap: SchemaMap, body: Json, isPublic: Boolean, supersedes: List[SchemaVer.Full])(implicit
+    C: Clock[F],
     M: Bracket[F, Throwable]
   ): F[Unit] =
     logger.debug(s"addSchema ${schemaMap.schemaKey.toSchemaUri}") *>
@@ -72,8 +72,8 @@ class Postgres[F[_]](xa: Transactor[F], logger: Logger[F]) extends Storage[F] { 
           case _            => doobie.free.connection.unit
         })).transact(xa)
 
-  def updateSchema(schemaMap: SchemaMap, body: Json, isPublic: Boolean)(
-    implicit C: Clock[F],
+  def updateSchema(schemaMap: SchemaMap, body: Json, isPublic: Boolean)(implicit
+    C: Clock[F],
     M: Bracket[F, Throwable]
   ): F[Unit] =
     logger.debug(s"updateSchema ${schemaMap.schemaKey.toSchemaUri}") *>
@@ -90,8 +90,8 @@ class Postgres[F[_]](xa: Transactor[F], logger: Logger[F]) extends Storage[F] { 
   def getDraft(draftId: DraftId)(implicit B: Bracket[F, Throwable]): F[Option[SchemaDraft]] =
     Postgres.Sql.getDraft(draftId).option.transact(xa)
 
-  def addDraft(draftId: DraftId, body: Json, isPublic: Boolean)(
-    implicit C: Clock[F],
+  def addDraft(draftId: DraftId, body: Json, isPublic: Boolean)(implicit
+    C: Clock[F],
     M: Bracket[F, Throwable]
   ): F[Unit] =
     Postgres.Sql.addDraft(draftId, body, isPublic).run.void.transact(xa)

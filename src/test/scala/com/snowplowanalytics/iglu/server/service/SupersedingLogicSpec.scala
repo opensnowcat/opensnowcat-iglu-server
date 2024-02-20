@@ -39,11 +39,10 @@ trait SupersedingLogicSpecBase extends org.specs2.Specification with StorageAgno
     SchemaVer.Full(version._1, version._2, version._3)
 
   private def sendReceive(schemas: List[(Json, SchemaKey)]): List[Json] = {
-    val putRequests = schemas.map {
-      case (body, key) =>
-        Request[IO](Method.PUT, key.uri)
-          .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
-          .withEntity(body)
+    val putRequests = schemas.map { case (body, key) =>
+      Request[IO](Method.PUT, key.uri)
+        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withEntity(body)
     }
     val getRequests = schemas.map(_._2).distinct.map { key =>
       Request[IO](Method.GET, key.uri).withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))

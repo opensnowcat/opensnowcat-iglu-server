@@ -122,8 +122,8 @@ object ValidationService {
 
     val lintReport: LintReport[Unit] =
       SchemaAst.parse(schema).fold(NotSchema.invalidNel[SchemaAst])(_.validNel[Message]).andThen { ast =>
-        val result = lint(ast, allLintersMap.values.toList).toList.flatMap {
-          case (pointer, issues) => issues.toList.map(_.toMessage(pointer))
+        val result = lint(ast, allLintersMap.values.toList).toList.flatMap { case (pointer, issues) =>
+          issues.toList.map(_.toMessage(pointer))
         }
         NonEmptyList.fromList(result).fold(().validNel[Message])(_.invalid[Unit])
       }

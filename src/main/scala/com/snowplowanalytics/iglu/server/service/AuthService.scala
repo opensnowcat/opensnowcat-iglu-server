@@ -49,19 +49,19 @@ class AuthService[F[+_]: Sync](swagger: SwaggerSyntax[F], ctx: AuthedContext[F, 
 
   "Route to generate new keys" **
     POST / "keygen" >>> ctx.auth ^ jsonOf[F, GenerateKey] |>> { (authInfo: Permission, gk: GenerateKey) =>
-    if (authInfo.key.contains(Permission.KeyAction.Create)) {
-      val vendorPrefix = Permission.Vendor.parse(gk.vendorPrefix)
-      if (authInfo.canCreatePermission(vendorPrefix.asString)) {
-        for {
-          keyPair    <- Permission.KeyPair.generate[F]
-          _          <- db.addKeyPair(keyPair, vendorPrefix)
-          okResponse <- Ok(keyPair.asJson)
-        } yield okResponse
-      } else {
-        Forbidden(IgluResponse.Message(s"Cannot create ${vendorPrefix.show} using your permissions"): IgluResponse)
-      }
-    } else Forbidden(IgluResponse.Message("Not sufficient privileges to create keys"): IgluResponse)
-  }
+      if (authInfo.key.contains(Permission.KeyAction.Create)) {
+        val vendorPrefix = Permission.Vendor.parse(gk.vendorPrefix)
+        if (authInfo.canCreatePermission(vendorPrefix.asString)) {
+          for {
+            keyPair    <- Permission.KeyPair.generate[F]
+            _          <- db.addKeyPair(keyPair, vendorPrefix)
+            okResponse <- Ok(keyPair.asJson)
+          } yield okResponse
+        } else {
+          Forbidden(IgluResponse.Message(s"Cannot create ${vendorPrefix.show} using your permissions"): IgluResponse)
+        }
+      } else Forbidden(IgluResponse.Message("Not sufficient privileges to create keys"): IgluResponse)
+    }
 
   def deleteKey(key: UUID, permission: Permission) =
     if (permission.key.contains(Permission.KeyAction.Delete)) {

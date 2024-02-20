@@ -45,8 +45,7 @@ object SchemaDraft {
     Meta[Int].timap(int => NonNegInt.from(int).fold(x => throw IncompatibleStorage(x), identity))(x => x.value)
 
   implicit val schemaDraftDoobieRead: Read[SchemaDraft] =
-    Read[(DraftId, Metadata, Json)].map {
-      case (id, meta, body) =>
-        SchemaDraft(id, meta, body)
+    Read[(DraftId, Metadata, Json)].map { case (id, meta, body) =>
+      SchemaDraft(id, meta, body)
     }
 }

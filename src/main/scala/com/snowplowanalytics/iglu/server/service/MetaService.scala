@@ -50,37 +50,37 @@ class MetaService[F[+_]: Sync](
 
   "This route responds with OK string when the server is healthy" **
     GET / "health" |>> isHealthy.flatMap {
-    case true => ok
-    case false =>
-      ServiceUnavailable("Service Unavailable").map(
-        _.withContentType(`Content-Type`(MediaType.text.plain, Charset.`UTF-8`))
-      )
-  }
+      case true => ok
+      case false =>
+        ServiceUnavailable("Service Unavailable").map(
+          _.withContentType(`Content-Type`(MediaType.text.plain, Charset.`UTF-8`))
+        )
+    }
 
   "This route responds with OK string if database is available" **
     GET / "health" / "db" |>> {
-    for {
-      _ <- db match {
-        case pg: Postgres[F] => pg.ping.void
-        case _               => Sync[F].unit
-      }
-      response <- ok
-    } yield response
-  }
+      for {
+        _ <- db match {
+          case pg: Postgres[F] => pg.ping.void
+          case _               => Sync[F].unit
+        }
+        response <- ok
+      } yield response
+    }
 
   "This route responds with info about the Iglu Server" **
     GET / "server" >>> ctx.auth |>> { authInfo: Permission =>
-    val database = db match {
-      case _: Postgres[F] => "postgres"
-      case _: InMemory[F] => "inmemory"
-      case _              => "unknown"
+      val database = db match {
+        case _: Postgres[F] => "postgres"
+        case _: InMemory[F] => "inmemory"
+        case _              => "unknown"
+      }
+      for {
+        schemas <- db.getSchemasKeyOnly
+        count = schemas.filter(s => authInfo.canRead(s._1.schemaKey.vendor)).as(()).length
+        response <- Ok(MetaService.ServerInfo(BuildInfo.version, authInfo, database, count, debug, patchesAllowed))
+      } yield response
     }
-    for {
-      schemas <- db.getSchemasKeyOnly
-      count = schemas.filter(s => authInfo.canRead(s._1.schemaKey.vendor)).as(()).length
-      response <- Ok(MetaService.ServerInfo(BuildInfo.version, authInfo, database, count, debug, patchesAllowed))
-    } yield response
-  }
 }
 
 object MetaService {

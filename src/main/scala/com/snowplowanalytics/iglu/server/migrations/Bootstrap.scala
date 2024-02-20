@@ -39,16 +39,16 @@ EXCEPTION
         CREATE TYPE schema_action AS ENUM (''READ'', ''BUMP'', ''CREATE'', ''CREATE_VENDOR'');
 END';"""
 
-  val permissionsCreate = (fr"CREATE TABLE IF NOT EXISTS" ++ Postgres.PermissionsTable ++ fr"""(
+  val permissionsCreate = fr"CREATE TABLE IF NOT EXISTS" ++ Postgres.PermissionsTable ++ fr"""(
         apikey              UUID            NOT NULL,
         vendor              VARCHAR(128),
         wildcard            BOOL            NOT NULL,
         schema_action       schema_action,
         key_action          key_action[]    NOT NULL,
         PRIMARY KEY (apikey)
-      );""")
+      );"""
 
-  val schemasCreate = (fr"CREATE TABLE IF NOT EXISTS" ++ Postgres.SchemasTable ++ fr"""(
+  val schemasCreate = fr"CREATE TABLE IF NOT EXISTS" ++ Postgres.SchemasTable ++ fr"""(
         vendor      VARCHAR(128)  NOT NULL,
         name        VARCHAR(128)  NOT NULL,
         format      VARCHAR(128)  NOT NULL,
@@ -64,9 +64,9 @@ END';"""
 
         superseded_by VARCHAR(32) NULL,
         supersedes VARCHAR(32) ARRAY NULL
-      )""")
+      )"""
 
-  val draftsCreate = (fr"CREATE TABLE IF NOT EXISTS" ++ Postgres.DraftsTable ++ fr"""(
+  val draftsCreate = fr"CREATE TABLE IF NOT EXISTS" ++ Postgres.DraftsTable ++ fr"""(
         vendor      VARCHAR(128) NOT NULL,
         name        VARCHAR(128) NOT NULL,
         format      VARCHAR(128) NOT NULL,
@@ -77,7 +77,7 @@ END';"""
         is_public   BOOLEAN      NOT NULL,
 
         body        JSON         NOT NULL
-      )""")
+      )"""
 
   val allStatements =
     List(keyActionCreate, schemaActionCreate, permissionsCreate, schemasCreate, draftsCreate)

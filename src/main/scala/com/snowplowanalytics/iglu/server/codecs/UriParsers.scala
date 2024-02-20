@@ -71,9 +71,8 @@ trait UriParsers {
 
       override def parse(s: String)(implicit F: Monad[F]): ResultResponse[F, DraftVersion] = {
         val int =
-          try {
-            Right(s.toInt)
-          } catch { case _: NumberFormatException => Left(s"$s is not an integer") }
+          try Right(s.toInt)
+          catch { case _: NumberFormatException => Left(s"$s is not an integer") }
         int.flatMap(NonNegInt.from).fold(err => FailureResponse.pure[F](BadRequest.pure(err)), SuccessResponse.apply)
       }
     }

@@ -57,7 +57,8 @@ object VersionCursor {
         case AlreadyExists =>
           "Schema already exists"
         case Availability(isPublic, previousPublic) =>
-          s"Inconsistent schema availability. Cannot add ${if (isPublic) "public" else "private"} schema, previous versions are ${if (previousPublic) "public" else "private"}"
+          s"Inconsistent schema availability. Cannot add ${if (isPublic) "public"
+          else "private"} schema, previous versions are ${if (previousPublic) "public" else "private"}"
       }
   }
 
@@ -80,8 +81,7 @@ object VersionCursor {
     case next                    => NonInitial(next)
   }
 
-  /**
-    * Check if existing state allows new schema
+  /** Check if existing state allows new schema
     * It makes an assumption that `existing` is entirely consistent list without `current` schema
     */
   private[model] def isVersionAllowed(

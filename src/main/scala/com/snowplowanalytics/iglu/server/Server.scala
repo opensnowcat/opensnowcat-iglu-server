@@ -133,7 +133,7 @@ object Server {
     )
 
     val debugRoute  = "/api/debug" -> DebugService.asRoutes(storage, ioSwagger.createRhoMiddleware())
-    val staticRoute = "/static" -> StaticService.routes(blocker)
+    val staticRoute = "/static"    -> StaticService.routes(blocker)
     val routes      = staticRoute :: services.map(addSwagger(storage, superKey, swaggerConfig))
     val corsPolicy = CORS
       .policy
@@ -143,12 +143,11 @@ object Server {
       .withAllowHeadersIn(Set(CIString("content-type"), CIString("apikey")))
       .withMaxAge(1.day)
 
-    (if (debug) debugRoute :: routes else routes).map {
-      case (endpoint, route) =>
-        // Apply middleware
-        val httpRoutes        = CachingMiddleware(cache)(BadRequestHandler(corsPolicy(AutoSlash(route))))
-        val redactHeadersWhen = (Headers.SensitiveHeaders + "apikey".ci).contains _
-        (endpoint, Logger.httpRoutes[IO](true, true, redactHeadersWhen, Some(logger.debug(_)))(httpRoutes))
+    (if (debug) debugRoute :: routes else routes).map { case (endpoint, route) =>
+      // Apply middleware
+      val httpRoutes        = CachingMiddleware(cache)(BadRequestHandler(corsPolicy(AutoSlash(route))))
+      val redactHeadersWhen = (Headers.SensitiveHeaders + "apikey".ci).contains _
+      (endpoint, Logger.httpRoutes[IO](true, true, redactHeadersWhen, Some(logger.debug(_)))(httpRoutes))
     }
   }
 
@@ -210,9 +209,10 @@ object Server {
           // We received a SIGINT
           for {
             _ <- logger.warn("Received shutdown signal")
-            _ <- if (config.preTerminationUnhealthy) {
-              logger.warn(s"Setting health endpoint to unhealthy") *> isHealthy.set(false)
-            } else IO.unit
+            _ <-
+              if (config.preTerminationUnhealthy) {
+                logger.warn(s"Setting health endpoint to unhealthy") *> isHealthy.set(false)
+              } else IO.unit
             _ <- logger.warn(s"Sleeping for ${config.preTerminationPeriod}")
             _ <- IO.sleep(config.preTerminationPeriod)
             _ <- logger.warn("Terminating the server")

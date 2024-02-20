@@ -128,26 +128,25 @@ object Fifth {
       .queryWithLogHandler[(String, String, String, String, String, Instant, Instant, Boolean)](
         LogHandler.jdkLogHandler
       )
-      .map {
-        case (vendor, name, format, version, body, createdAt, updatedAt, isPublic) =>
-          val schemaMap = for {
-            ver <- SchemaVer.parse(version)
-            key <- SchemaKey.fromUri(s"iglu:$vendor/$name/$format/${ver.asString}")
-          } yield SchemaMap(key)
-          for {
-            jsonBody <- parse(body).leftMap(_.show)
-            map      <- schemaMap.leftMap(_.code)
-            schema <- SelfDescribingSchema.parse(jsonBody) match {
-              case Left(ParseError.InvalidSchema) =>
-                jsonBody.asRight // Non self-describing JSON schema
-              case Left(e) =>
-                s"Invalid self-describing payload for [${map.schemaKey.toSchemaUri}], ${e.code}".asLeft
-              case Right(schema) if schema.self == map =>
-                schema.schema.asRight
-              case Right(schema) =>
-                s"Self-describing payload [${schema.self.schemaKey.toSchemaUri}] does not match its DB reference [${map.schemaKey.toSchemaUri}]".asLeft
-            }
-          } yield SchemaFifth(map, schema, isPublic, createdAt, updatedAt)
+      .map { case (vendor, name, format, version, body, createdAt, updatedAt, isPublic) =>
+        val schemaMap = for {
+          ver <- SchemaVer.parse(version)
+          key <- SchemaKey.fromUri(s"iglu:$vendor/$name/$format/${ver.asString}")
+        } yield SchemaMap(key)
+        for {
+          jsonBody <- parse(body).leftMap(_.show)
+          map      <- schemaMap.leftMap(_.code)
+          schema <- SelfDescribingSchema.parse(jsonBody) match {
+            case Left(ParseError.InvalidSchema) =>
+              jsonBody.asRight // Non self-describing JSON schema
+            case Left(e) =>
+              s"Invalid self-describing payload for [${map.schemaKey.toSchemaUri}], ${e.code}".asLeft
+            case Right(schema) if schema.self == map =>
+              schema.schema.asRight
+            case Right(schema) =>
+              s"Self-describing payload [${schema.self.schemaKey.toSchemaUri}] does not match its DB reference [${map.schemaKey.toSchemaUri}]".asLeft
+          }
+        } yield SchemaFifth(map, schema, isPublic, createdAt, updatedAt)
       }
 
   def migrateSchemas(schemas: List[SchemaFifth]) =
@@ -161,15 +160,14 @@ object Fifth {
       .queryWithLogHandler[(String, String, String, String, String, Instant, Instant, Boolean)](
         LogHandler.jdkLogHandler
       )
-      .map {
-        case (vendor, name, format, draftId, body, createdAt, updatedAt, isPublic) =>
-          for {
-            verInt   <- Either.catchOnly[NumberFormatException](draftId.toInt).leftMap(_.getMessage)
-            number   <- NonNegInt.from(verInt)
-            jsonBody <- parse(body).leftMap(_.show)
-            draftId = SchemaDraft.DraftId(vendor, name, format, number)
-            meta    = Schema.Metadata(createdAt, updatedAt, isPublic)
-          } yield SchemaDraft(draftId, meta, jsonBody)
+      .map { case (vendor, name, format, draftId, body, createdAt, updatedAt, isPublic) =>
+        for {
+          verInt   <- Either.catchOnly[NumberFormatException](draftId.toInt).leftMap(_.getMessage)
+          number   <- NonNegInt.from(verInt)
+          jsonBody <- parse(body).leftMap(_.show)
+          draftId = SchemaDraft.DraftId(vendor, name, format, number)
+          meta    = Schema.Metadata(createdAt, updatedAt, isPublic)
+        } yield SchemaDraft(draftId, meta, jsonBody)
       }
 
   def migrateDrafts =

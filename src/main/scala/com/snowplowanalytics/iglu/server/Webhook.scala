@@ -37,8 +37,8 @@ object Webhook {
   ) extends Webhook
 
   case class WebhookClient[F[_]](webhooks: List[Webhook], httpClient: Client[F]) {
-    def schemaPublished(schemaKey: SchemaKey, updated: Boolean)(
-      implicit F: BracketThrow[F]
+    def schemaPublished(schemaKey: SchemaKey, updated: Boolean)(implicit
+      F: BracketThrow[F]
     ): F[List[Either[String, Unit]]] =
       webhooks.traverse {
         case SchemaPublished(uri, prefixes, usePost)

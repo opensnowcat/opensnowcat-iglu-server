@@ -35,8 +35,7 @@ import scala.concurrent.duration.FiniteDuration
 
 import generated.BuildInfo.version
 
-/**
-  * Case class containing the Iglu Server's configuration options,
+/** Case class containing the Iglu Server's configuration options,
   * derived from a Typesafe Config configuration file.
   *
   * @param database       Database used by the server, either dummy (in-memory storage) or postgres instance
@@ -159,13 +158,11 @@ object Config {
         }
     }
 
-    /**
-      * Dummy in-memory configuration.
+    /** Dummy in-memory configuration.
       */
     case object Dummy extends StorageConfig
 
-    /**
-      * Configuration for PostgreSQL state storage.
+    /** Configuration for PostgreSQL state storage.
       */
     case class Postgres(
       host: String,
@@ -210,8 +207,7 @@ object Config {
       }
   }
 
-  /**
-    * Configuration options for the Iglu server.
+  /** Configuration options for the Iglu server.
     *
     * @param interface The server's host.
     * @param port The server's port.
@@ -289,9 +285,8 @@ object Config {
       namespaced(ConfigSource.default(namespaced(fileConfig.withFallback(namespaced(ConfigSource.default)))))
         .load[Config]
         .leftMap { errors =>
-          val msg = config.fold("Error resolving configuration without a file")(path =>
-            s"Error resolving configuration from $path"
-          )
+          val msg = config
+            .fold("Error resolving configuration without a file")(path => s"Error resolving configuration from $path")
           (msg :: errors.toList.map(_.description)).mkString("\n")
         }
     }
@@ -302,12 +297,11 @@ object Config {
         for {
           configObj <- configObjSource.value()
           conf = configObj.toConfig
-        } yield {
+        } yield
           if (conf.hasPath(Namespace))
             conf.getConfig(Namespace).withFallback(conf.withoutPath(Namespace))
           else
             conf
-        }
       }
   }
 

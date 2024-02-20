@@ -43,8 +43,8 @@ case class InMemory[F[_]](ref: Ref[F, InMemory.State]) extends Storage[F] {
       _ <- ref.set(newState)
     } yield ()
 
-  def addSchema(schemaMap: SchemaMap, body: Json, isPublic: Boolean, supersedes: List[SchemaVer.Full])(
-    implicit C: Clock[F],
+  def addSchema(schemaMap: SchemaMap, body: Json, isPublic: Boolean, supersedes: List[SchemaVer.Full])(implicit
+    C: Clock[F],
     M: Bracket[F, Throwable]
   ): F[Unit] =
     for {
@@ -59,8 +59,8 @@ case class InMemory[F[_]](ref: Ref[F, InMemory.State]) extends Storage[F] {
       _ <- updateSupersedingVersion(schemaMap, supersedes.toSet)
     } yield ()
 
-  def updateSchema(schemaMap: SchemaMap, body: Json, isPublic: Boolean)(
-    implicit C: Clock[F],
+  def updateSchema(schemaMap: SchemaMap, body: Json, isPublic: Boolean)(implicit
+    C: Clock[F],
     M: Bracket[F, Throwable]
   ): F[Unit] =
     addSchema(schemaMap, body, isPublic, List.empty)
@@ -83,8 +83,8 @@ case class InMemory[F[_]](ref: Ref[F, InMemory.State]) extends Storage[F] {
   def getDraft(draftId: DraftId)(implicit B: Bracket[F, Throwable]): F[Option[SchemaDraft]] =
     for { db <- ref.get } yield db.drafts.get(draftId)
 
-  def addDraft(draftId: DraftId, body: Json, isPublic: Boolean)(
-    implicit C: Clock[F],
+  def addDraft(draftId: DraftId, body: Json, isPublic: Boolean)(implicit
+    C: Clock[F],
     M: Bracket[F, Throwable]
   ): F[Unit] =
     for {
@@ -135,14 +135,13 @@ case class InMemory[F[_]](ref: Ref[F, InMemory.State]) extends Storage[F] {
           case (schemaMap, version) if supersedes(version) => schemaMap.schemaKey.version
         }
         .toSet
-      data = transitive.union(supersedes).foldLeft(db.superseding) {
-        case (acc, version) =>
-          val map = schemaMap.copy(schemaKey = schemaMap.schemaKey.copy(version = version))
-          val newValue = Ordering[SchemaVer.Full].max(
-            acc.get(map).getOrElse(schemaMap.schemaKey.version),
-            schemaMap.schemaKey.version
-          )
-          acc.updated(map, newValue)
+      data = transitive.union(supersedes).foldLeft(db.superseding) { case (acc, version) =>
+        val map = schemaMap.copy(schemaKey = schemaMap.schemaKey.copy(version = version))
+        val newValue = Ordering[SchemaVer.Full].max(
+          acc.get(map).getOrElse(schemaMap.schemaKey.version),
+          schemaMap.schemaKey.version
+        )
+        acc.updated(map, newValue)
       }
       _ <- ref.update(_.copy(superseding = data))
     } yield ()

@@ -29,15 +29,15 @@ class DebugService[F[_]: Sync](swagger: SwaggerSyntax[F], db: Storage[F]) extend
 
   "Show internal state" **
     GET |>> {
-    db match {
-      case InMemory(ref) =>
-        for {
-          db       <- ref.get
-          response <- Ok(db.toString)
-        } yield response
-      case other => NotImplemented(s"Cannot show $other")
+      db match {
+        case InMemory(ref) =>
+          for {
+            db       <- ref.get
+            response <- Ok(db.toString)
+          } yield response
+        case other => NotImplemented(s"Cannot show $other")
+      }
     }
-  }
 }
 
 object DebugService {

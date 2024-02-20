@@ -25,8 +25,7 @@ object StaticService {
   private val localUi      = "/swagger-ui-dist"
   private val swaggerUiDir = s"/META-INF/resources/webjars/swagger-ui/${BuildInfo.SwaggerUI}"
 
-  /**
-    * Routes for getting static resources. These might be served more efficiently by apache2 or nginx,
+  /** Routes for getting static resources. These might be served more efficiently by apache2 or nginx,
     * but its nice to keep it self contained
     */
   def routes(blocker: Blocker)(implicit cs: ContextShift[IO]): HttpRoutes[IO] =

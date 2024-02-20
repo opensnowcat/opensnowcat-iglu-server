@@ -90,8 +90,8 @@ class SchemaService[F[+_]: Sync](
 
   "Schema validation endpoint (deprecated)" **
     POST / "validate" / 'vendor / 'name / "jsonschema" / 'version ^ jsonDecoder[F] |>> {
-    (_: String, _: String, _: String, json: Json) => validationService.validateSchema(Schema.Format.Jsonschema, json)
-  }
+      (_: String, _: String, _: String, json: Json) => validationService.validateSchema(Schema.Format.Jsonschema, json)
+    }
 
   def getSchema(
     vendor: String,
@@ -187,8 +187,8 @@ class SchemaService[F[+_]: Sync](
     val result = format match {
       case SchemaFormat.Uri =>
         db.getSchemasKeyOnly
-          .map(_.filter(isReadablePair(permission)).map {
-            case (map, meta) => Schema(map, meta, Json.Null, SupersedingInfo.empty).withFormat(SchemaFormat.Uri)
+          .map(_.filter(isReadablePair(permission)).map { case (map, meta) =>
+            Schema(map, meta, Json.Null, SupersedingInfo.empty).withFormat(SchemaFormat.Uri)
           })
       case _ =>
         db.getSchemas.map(_.filter(isReadable(permission)).map(_.withFormat(format)))
@@ -214,8 +214,9 @@ class SchemaService[F[+_]: Sync](
         case Right(_) =>
           for {
             existing <- db.getSchema(schema.self).map(_.isDefined)
-            _ <- if (existing) db.updateSchema(schema.self, schema.schema, isPublic)
-            else db.addSchema(schema.self, schema.schema, isPublic, supersedingInfo.supersedes)
+            _ <-
+              if (existing) db.updateSchema(schema.self, schema.schema, isPublic)
+              else db.addSchema(schema.self, schema.schema, isPublic, supersedingInfo.supersedes)
             payload = IgluResponse.SchemaUploaded(existing, schema.self.schemaKey): IgluResponse
             _        <- webhooks.schemaPublished(schema.self.schemaKey, existing)
             response <- if (existing) Ok(payload) else Created(payload)

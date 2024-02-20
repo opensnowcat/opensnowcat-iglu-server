@@ -79,8 +79,7 @@ object Permission {
   implicit val permissionCirceEncoder: Encoder[Permission] =
     deriveEncoder[Permission]
 
-  /**
-    * Permission regarding vendor
+  /** Permission regarding vendor
     * @param parts dot-separated namespace, where permission can be applied
     * @param wildcard whether permission applied to any "smaller" vendor
     *                 or just specified in `parts`

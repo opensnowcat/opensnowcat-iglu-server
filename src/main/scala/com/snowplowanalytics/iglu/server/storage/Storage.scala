@@ -30,8 +30,7 @@ import com.snowplowanalytics.iglu.server.Config.StorageConfig
 import com.snowplowanalytics.iglu.server.model.{Permission, Schema, SchemaDraft}
 import com.snowplowanalytics.iglu.server.model.SchemaDraft.DraftId
 
-/**
-  * Common interface for supported backend storages
+/** Common interface for supported backend storages
   * Up to implementation to sort schemas by creation date
   */
 trait Storage[F[_]] {
@@ -42,8 +41,8 @@ trait Storage[F[_]] {
   def deleteSchema(schemaMap: SchemaMap)(implicit F: Bracket[F, Throwable]): F[Unit]
   def getSchemasByName(vendor: String, name: String)(implicit F: Bracket[F, Throwable]): Stream[F, Schema] =
     getSchemasByVendor(vendor).filter(_.schemaMap.schemaKey.name === name)
-  def getSchemasByModel(vendor: String, name: String, model: Int)(
-    implicit F: Bracket[F, Throwable]
+  def getSchemasByModel(vendor: String, name: String, model: Int)(implicit
+    F: Bracket[F, Throwable]
   ): Stream[F, Schema] =
     getSchemasByName(vendor, name).filter(_.schemaMap.schemaKey.version.model === model)
   def getSchemas(implicit F: Bracket[F, Throwable]): F[List[Schema]]
@@ -52,12 +51,12 @@ trait Storage[F[_]] {
   def getSchemasKeyOnly(implicit F: Bracket[F, Throwable]): F[List[(SchemaMap, Schema.Metadata)]]
   def getSchemaBody(schemaMap: SchemaMap)(implicit F: Bracket[F, Throwable]): F[Option[Json]] =
     getSchema(schemaMap).nested.map(_.body).value
-  def addSchema(schemaMap: SchemaMap, body: Json, isPublic: Boolean, supersedes: List[SchemaVer.Full])(
-    implicit C: Clock[F],
+  def addSchema(schemaMap: SchemaMap, body: Json, isPublic: Boolean, supersedes: List[SchemaVer.Full])(implicit
+    C: Clock[F],
     M: Bracket[F, Throwable]
   ): F[Unit]
-  def updateSchema(schemaMap: SchemaMap, body: Json, isPublic: Boolean)(
-    implicit C: Clock[F],
+  def updateSchema(schemaMap: SchemaMap, body: Json, isPublic: Boolean)(implicit
+    C: Clock[F],
     M: Bracket[F, Throwable]
   ): F[Unit]
 
@@ -90,15 +89,15 @@ object Storage {
       case StorageConfig.Dummy =>
         Resource.eval(storage.InMemory.empty)
       case StorageConfig.Postgres(
-          host,
-          port,
-          name,
-          username,
-          password,
-          driver,
-          _,
-          Config.StorageConfig.ConnectionPool.NoPool(ec),
-          enableStartupChecks
+            host,
+            port,
+            name,
+            username,
+            password,
+            driver,
+            _,
+            Config.StorageConfig.ConnectionPool.NoPool(ec),
+            enableStartupChecks
           ) =>
         val url = s"jdbc:postgresql://$host:$port/$name"
         for {

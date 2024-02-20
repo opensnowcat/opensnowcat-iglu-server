@@ -32,8 +32,7 @@ import org.http4s.rho.AuthedContext
 import com.snowplowanalytics.iglu.server.model.{IgluResponse, Permission}
 import com.snowplowanalytics.iglu.server.storage.Storage
 
-/**
-  * Used only in HTTP Services, where all endpoints require authentication
+/** Used only in HTTP Services, where all endpoints require authentication
   *
   * For any *failed* attempt attempt of authentication, e.g. if apikey is provided,
   * but not found - return 404, "Schema not found" in order to hide the fact

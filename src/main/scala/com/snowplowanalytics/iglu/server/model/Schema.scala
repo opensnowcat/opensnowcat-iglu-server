@@ -212,8 +212,8 @@ object Schema {
         self     <- cursor.value.as[SchemaMap]
         meta     <- cursor.downField("metadata").as[Metadata]
         bodyJson <- cursor.as[JsonObject]
-        body = bodyJson.toList.filterNot {
-          case (key, _) => List("self", "metadata", SupersededByField, SupersedesField).contains(key)
+        body = bodyJson.toList.filterNot { case (key, _) =>
+          List("self", "metadata", SupersededByField, SupersedesField).contains(key)
         }
         supersedingInfo <- cursor.value.as[SupersedingInfo]
       } yield Schema(self, meta, Json.fromFields(body), supersedingInfo)
