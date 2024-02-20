@@ -31,6 +31,7 @@ import scalacache.{Entry, Flags, Mode, removeAll}
 import scalacache.CatsEffect.modes._
 
 import scala.concurrent.duration.Duration
+import org.typelevel.ci._
 
 object CachingMiddleware {
   def apply[F[_]](cache: ResponseCache[F])(service: HttpRoutes[F])(implicit F: CatsAsync[F]): HttpRoutes[F] = {
@@ -111,7 +112,7 @@ object CachingMiddleware {
   private def keyer[F[_]](req: Request[F]): CacheAction =
     req.method match {
       case Method.GET if req.uri.renderString.contains("/schemas") =>
-        val apikey = req.headers.get("apikey".ci).map(_.value).getOrElse("")
+        val apikey = req.headers.get(ci"apikey").map(_.value).getOrElse("")
         CacheAction.Get(s"${req.uri.renderString}:$apikey")
       case Method.PUT | Method.POST | Method.DELETE =>
         CacheAction.Clean

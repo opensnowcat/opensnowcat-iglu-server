@@ -12,6 +12,7 @@ import io.circe.literal._
 import org.http4s.circe._
 import org.http4s.rho.swagger.syntax.io.createRhoMiddleware
 import org.http4s.{Header, Headers, Method, Request, Response}
+import org.typelevel.ci._
 
 trait SupersedingLogicSpecBase extends org.specs2.Specification with StorageAgnosticSpec {
   private def sendRequests(requests: List[Request[IO]]): IO[(List[Response[IO]], Unit)] =
@@ -42,11 +43,11 @@ trait SupersedingLogicSpecBase extends org.specs2.Specification with StorageAgno
     val putRequests = schemas.map {
       case (body, key) =>
         Request[IO](Method.PUT, key.uri)
-          .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+          .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
           .withEntity(body)
     }
     val getRequests = schemas.map(_._2).distinct.map { key =>
-      Request[IO](Method.GET, key.uri).withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+      Request[IO](Method.GET, key.uri).withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
     }
     val result = for {
       responses <- sendRequests(putRequests ::: getRequests)

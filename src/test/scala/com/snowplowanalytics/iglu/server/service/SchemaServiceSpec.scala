@@ -32,6 +32,7 @@ import com.snowplowanalytics.iglu.server.SpecHelpers.SchemaKeyUri
 import org.http4s.rho.swagger.syntax.io.createRhoMiddleware
 
 import java.time.Instant
+import org.typelevel.ci._
 
 trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosticSpec {
   def sendRequests(requests: List[Request[IO]], patchesAllowed: Boolean): IO[Response[IO]] =
@@ -105,7 +106,7 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
       Request(
         Method.GET,
         Uri.uri("/com.acme/secret/jsonschema/1-0-0"),
-        headers = Headers.of(Header("apikey", SpecHelpers.readKeyAcme.toString))
+        headers = Headers(Header("apikey", SpecHelpers.readKeyAcme.toString))Header.Rawci"apikey"
       )
 
     val result = for {
@@ -122,7 +123,7 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
       Request(
         Method.GET,
         Uri.uri("/com.acme/secret/jsonschema/1-0-0"),
-        headers = Headers.of(Header("apikey", UUID.randomUUID().toString))
+        headers = Headers(Header("apikey", UUID.randomUUID().toString))Header.Rawci"apikey"
       )
 
     val result = for {
@@ -179,7 +180,7 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
       Request(
         Method.GET,
         Uri.uri("/com.acme/secret/jsonschema/1-0-0"),
-        headers = Headers.of(Header("apikey", "not-uuid"))
+        headers = Headers(Header("apikey", "not-uuid"))Header.Rawci"apikey"
       )
 
     val result = for {
@@ -211,7 +212,7 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
 
   def e8 = {
     val req: Request[IO] =
-      Request(Method.GET, uri"/").withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+      Request(Method.GET, uri"/").withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
 
     val result = for {
       response <- sendRequests(List(req), false)
@@ -246,10 +247,10 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
     val reqs: List[Request[IO]] = List(
       Request[IO](Method.PUT, uri"/com.acme/nonexistent/jsonschema/1-0-0")
         .withContentType(headers.`Content-Type`(MediaType.application.json))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withBodyStream(exampleSchema),
       Request[IO](Method.GET, uri"/com.acme/nonexistent/jsonschema/1-0-0")
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
     )
 
     val (requests, schemas) = getState(reqs, false).unsafeRunSync()
@@ -297,14 +298,14 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
     val reqs: List[Request[IO]] = List(
       Request[IO](Method.PUT, Uri.uri("/com.acme/nonexistent/jsonschema/1-0-0"))
         .withContentType(headers.`Content-Type`(MediaType.application.json))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withBodyStream(exampleSchema),
       Request[IO](Method.PUT, Uri.uri("/com.acme/nonexistent/jsonschema/1-0-0"))
         .withContentType(headers.`Content-Type`(MediaType.application.json))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withBodyStream(exampleSchemaUpdated),
       Request[IO](Method.GET, Uri.uri("/com.acme/nonexistent/jsonschema/1-0-0"))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
     )
 
     val (requests, schemas) = getState(reqs, false).unsafeRunSync()
@@ -337,7 +338,7 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
 
     val req = Request[IO](Method.PUT, Uri.uri("/com.acme/nonexistent/jsonschema/1-2-0"))
       .withContentType(headers.`Content-Type`(MediaType.application.json))
-      .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+      .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
       .withBodyStream(exampleSchema)
 
     val result = for {
@@ -386,14 +387,14 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
     val reqs: List[Request[IO]] = List(
       Request[IO](Method.PUT, Uri.uri("/com.acme/nonexistent/jsonschema/1-0-0"))
         .withContentType(headers.`Content-Type`(MediaType.application.json))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withBodyStream(exampleSchema),
       Request[IO](Method.PUT, Uri.uri("/com.acme/nonexistent/jsonschema/1-0-0"))
         .withContentType(headers.`Content-Type`(MediaType.application.json))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withBodyStream(exampleSchemaUpdated),
       Request[IO](Method.GET, Uri.uri("/com.acme/nonexistent/jsonschema/1-0-0"))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
     )
 
     val (requests, schemas) = getState(reqs, true).unsafeRunSync()
@@ -432,26 +433,26 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
     val reqs: List[Request[IO]] = List(
       Request[IO](Method.PUT, uri"/com.acme/nonexistent/jsonschema/1-0-0")
         .withContentType(headers.`Content-Type`(MediaType.application.json))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withBodyStream(exampleSchema),
       Request[IO](Method.PUT, uri"/com.acme/nonexistent/jsonschema/1-0-1")
         .withContentType(headers.`Content-Type`(MediaType.application.json))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withBodyStream(exampleSchema),
       Request[IO](Method.PUT, uri"/com.acme/nonexistent/jsonschema/2-0-0")
         .withContentType(headers.`Content-Type`(MediaType.application.json))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withBodyStream(exampleSchema),
       Request[IO](Method.PUT, uri"/com.acme/nonexistent/jsonschema/1-0-2")
         .withContentType(headers.`Content-Type`(MediaType.application.json))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withBodyStream(exampleSchema),
       Request[IO](Method.PUT, uri"/com.acme/nonexistent/jsonschema/1-1-0")
         .withContentType(headers.`Content-Type`(MediaType.application.json))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withBodyStream(exampleSchema),
       Request[IO](Method.GET, uri"/com.acme/nonexistent/jsonschema/1")
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
     )
 
     val expected =
@@ -485,7 +486,7 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
 
     val req = Request[IO](Method.PUT, Uri.uri("/com.acme/nonexistent/jsonschema/1-0-0"))
       .withContentType(headers.`Content-Type`(MediaType.application.json))
-      .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+      .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
       .withBodyStream(exampleSchema)
 
     val result = for {
@@ -535,10 +536,10 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
     val reqs = List(
       Request[IO](Method.PUT, Uri.uri("/com.acme/nonexistent/jsonschema/1-0-0"))
         .withContentType(headers.`Content-Type`(MediaType.application.json))
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withBodyStream(exampleSchema),
       Request[IO](Method.GET, uri"/com.acme/nonexistent/jsonschema/1-0-0")
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
     )
 
     val result = for {
@@ -572,15 +573,15 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
 
     val reqs = List(
       Request[IO](Method.PUT, schemaKey100.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withEntity(schema100),
       Request[IO](Method.PUT, schemaKey101.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withEntity(schema101),
       Request[IO](Method.PUT, schemaKey100.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withEntity(schema100SupersededBy),
-      Request[IO](Method.GET, schemaKey100.uri).withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+      Request[IO](Method.GET, schemaKey100.uri).withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
     )
 
     val result = for {
@@ -636,24 +637,24 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
 
     val reqs = List(
       Request[IO](Method.PUT, schemaKey100.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withEntity(schema100),
       Request[IO](Method.PUT, schemaKey101.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withEntity(schema101),
       Request[IO](Method.PUT, schemaKey102.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withEntity(schema102),
       Request[IO](Method.PUT, schemaKey103.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withEntity(schema103),
       Request[IO](Method.GET, schemaKey100.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString))),
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey"),
       Request[IO](Method.GET, schemaKey101.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString))),
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey"),
       Request[IO](Method.GET, schemaKey102.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString))),
-      Request[IO](Method.GET, schemaKey103.uri).withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey"),
+      Request[IO](Method.GET, schemaKey103.uri).withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
     )
 
     val (responses, _) = getState(reqs, false).unsafeRunSync()
@@ -689,16 +690,16 @@ trait SchemaServiceSpecBase extends org.specs2.Specification with StorageAgnosti
 
     val reqs = List(
       Request[IO](Method.PUT, schemaKey100.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withEntity(schema100),
       Request[IO](Method.PUT, schemaKey200.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withEntity(schema200),
       Request[IO](Method.PUT, schemaKey101.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withEntity(schema101),
       Request[IO](Method.PUT, schemaKey101.uri)
-        .withHeaders(Headers.of(Header("apikey", SpecHelpers.superKey.toString)))
+        .withHeaders(Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey")
         .withEntity(schema101again)
     )
 
