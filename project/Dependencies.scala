@@ -25,7 +25,7 @@ object Dependencies {
     val Rho        = "0.21.0"
     val Doobie     = "0.13.4"
     val Decline    = "1.4.0"
-    val Log4Cats   = "1.3.0"
+    val Log4Cats   = "1.3.1"
     val Circe      = "0.14.3"
     val CirceFs2   = "0.13.0"
     val Refined    = "0.9.24"
