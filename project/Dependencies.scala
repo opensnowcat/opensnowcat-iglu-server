@@ -36,7 +36,7 @@ object Dependencies {
     val Postgresql = "42.5.4"
     val Jackson    = "2.14.1"
     val Snakeyaml  = "2.2"
-    val Guava      = "32.0.0-jre"
+    val Guava      = "32.0.1-jre"
 
     val Specs2  = "4.5.1"
     val Logback = "1.2.3"
