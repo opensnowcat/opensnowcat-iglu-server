@@ -68,7 +68,7 @@ object BuildSettings {
 
   lazy val compilerSettings = Seq(
     javacOptions := Seq("-source", "11", "-target", "11"),
-    addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.10"),
+    addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
     Compile / console / scalacOptions --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings"),
     scalacOptions ++= Seq(
       "-deprecation", // Emit warning and location for usages of deprecated APIs.
