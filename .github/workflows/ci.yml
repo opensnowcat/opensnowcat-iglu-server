@@ -35,14 +35,16 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Run tests
-      run: sbt +test
     - name: Check Scala formatting
       if: ${{ always() }}
       run: sbt scalafmtCheckAll
     - name: Check assets can be published
       if: ${{ always() }}
       run: sbt publishLocal
+    - name: Check that we can assemble fat jars
+      run: sbt "set assembly / test := {}" assembly
+    - name: Run tests
+      run: sbt +test
 
   github_release:
     needs: test
