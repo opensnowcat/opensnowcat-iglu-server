@@ -30,7 +30,7 @@ object BuildSettings {
   lazy val projectSettings = Seq(
     organization := "com.snowplowanalytics",
     name := "iglu-server",
-    scalaVersion := "2.12.9",
+    scalaVersion := "2.12.19",
     licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html"))
   )
 
