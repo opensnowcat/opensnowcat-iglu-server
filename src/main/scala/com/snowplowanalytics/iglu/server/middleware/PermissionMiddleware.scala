@@ -26,11 +26,11 @@ import cats.syntax.eq._
 
 import org.http4s.{HttpRoutes, Request, Response, Status}
 import org.http4s.server.AuthMiddleware
-import org.http4s.util.CaseInsensitiveString
 import org.http4s.rho.AuthedContext
 
 import com.snowplowanalytics.iglu.server.model.{IgluResponse, Permission}
 import com.snowplowanalytics.iglu.server.storage.Storage
+import org.typelevel.ci.CIString
 
 /**
   * Used only in HTTP Services, where all endpoints require authentication
@@ -52,7 +52,7 @@ object PermissionMiddleware {
 
   /** Extract API key from HTTP request */
   def getApiKey[F[_]](request: Request[F]): Option[Either[Throwable, UUID]] =
-    request.headers.get(CaseInsensitiveString(ApiKey)).map(header => header.value).map { apiKey =>
+    request.headers.get(CIString(ApiKey)).map(header => header.value).map { apiKey =>
       Either.catchOnly[IllegalArgumentException](UUID.fromString(apiKey))
     }
 

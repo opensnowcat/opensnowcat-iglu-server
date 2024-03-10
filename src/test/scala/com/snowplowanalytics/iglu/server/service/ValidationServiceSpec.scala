@@ -25,6 +25,7 @@ import org.http4s.implicits._
 import org.http4s.circe._
 import org.http4s.rho.swagger.syntax.io.createRhoMiddleware
 import SpecHelpers.toBytes
+import org.typelevel.ci._
 
 class ValidationServiceSpec extends org.specs2.Specification with StorageAgnosticSpec with InMemoryStorageSpec {
   def sendRequests(requests: List[Request[IO]]) =
@@ -226,7 +227,7 @@ class ValidationServiceSpec extends org.specs2.Specification with StorageAgnosti
     val instance =
       json"""{"schema" : "iglu:com.acme/secret/jsonschema/1-0-0", "data" : {} } """
     val request = Request[IO](Method.POST, Uri.uri("/validate/instance"))
-      .withHeaders(Headers.of(Header("apikey", SpecHelpers.readKey.toString)))
+      .withHeaders(Headers(Header("apikey", SpecHelpers.readKey.toString))Header.Rawci"apikey")
       .withBodyStream(toBytes(instance))
     val response = sendRequestGetText(request)
 
@@ -239,7 +240,7 @@ class ValidationServiceSpec extends org.specs2.Specification with StorageAgnosti
     val expected =
       json"""{"message" : "The schema is not found"}"""
     val request = Request[IO](Method.POST, Uri.uri("/validate/instance"))
-      .withHeaders(Headers.of(Header("apikey", "00000000-1111-eeee-0000-eeeeeeeeffff")))
+      .withHeaders(Headers(Header("apikey", "00000000-1111-eeee-0000-eeeeeeeeffff"))Header.Rawci"apikey")
       .withBodyStream(toBytes(instance))
 
     val (responses, _) = sendRequests(List(request)).unsafeRunSync()

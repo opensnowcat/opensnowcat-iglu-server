@@ -22,6 +22,7 @@ import org.http4s.rho.swagger.syntax.io.createRhoMiddleware
 
 import java.util.UUID
 import com.snowplowanalytics.iglu.server.storage.InMemory
+import org.typelevel.ci._
 
 class AuthServiceSpec extends org.specs2.Specification with StorageAgnosticSpec with InMemoryStorageSpec {
   def getState(request: Request[IO], superApiKey: Option[UUID] = None): IO[(List[Response[IO]], InMemory.State)] =
@@ -44,7 +45,7 @@ class AuthServiceSpec extends org.specs2.Specification with StorageAgnosticSpec 
     val req = Request(
       Method.POST,
       Uri.uri("/keygen"),
-      headers = Headers.of(Header("apikey", SpecHelpers.superKey.toString)),
+      headers = Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey",
       body = Stream.emits("""{"vendorPrefix": "me.chuwy"}""").evalMap(c => IO.pure(c.toByte))
     )
 
@@ -67,7 +68,7 @@ class AuthServiceSpec extends org.specs2.Specification with StorageAgnosticSpec 
     val req = Request(
       Method.POST,
       Uri.uri("/keygen"),
-      headers = Headers.of(Header("apikey", superApiKey.toString)),
+      headers = Headers(Header("apikey", superApiKey.toString))Header.Rawci"apikey",
       body = Stream.emits("""{"vendorPrefix": "me.chuwy"}""").evalMap(c => IO.pure(c.toByte))
     )
 
@@ -88,7 +89,7 @@ class AuthServiceSpec extends org.specs2.Specification with StorageAgnosticSpec 
     val req = Request(
       Method.POST,
       Uri.uri("/keygen"),
-      headers = Headers.of(Header("apikey", SpecHelpers.superKey.toString)),
+      headers = Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey",
       body = Stream.emits("""vendor_prefix=ru.chuwy""").evalMap(c => IO.pure(c.toByte))
     ).withContentType(headers.`Content-Type`(MediaType.application.`x-www-form-urlencoded`))
 
@@ -128,7 +129,7 @@ class AuthServiceSpec extends org.specs2.Specification with StorageAgnosticSpec 
       Request(
         Method.POST,
         Uri.uri("/keygen"),
-        headers = Headers.of(Header("apikey", unknownKey.toString)),
+        headers = Headers(Header("apikey", unknownKey.toString))Header.Rawci"apikey",
         body = Stream.emits("""{"vendorPrefix": "me.chuwy"}""").evalMap(c => IO.pure(c.toByte))
       )
 
@@ -144,7 +145,7 @@ class AuthServiceSpec extends org.specs2.Specification with StorageAgnosticSpec 
     val req = Request[IO](
       Method.DELETE,
       Uri.uri("/keygen").withQueryParam("key", SpecHelpers.readKey.toString),
-      headers = Headers.of(Header("apikey", SpecHelpers.superKey.toString))
+      headers = Headers(Header("apikey", SpecHelpers.superKey.toString))Header.Rawci"apikey"
     )
 
     val response           = getState(req)
