@@ -23,7 +23,7 @@ import io.circe.literal._
 import org.http4s._
 import org.http4s.implicits._
 import org.http4s.circe._
-import org.http4s.client.blaze.BlazeClientBuilder
+import org.http4s.blaze.client.BlazeClientBuilder
 
 import org.specs2.Specification
 
@@ -36,6 +36,7 @@ import com.snowplowanalytics.iglu.server.storage.InMemory
 import com.snowplowanalytics.iglu.server.codecs.JsonCodecs._
 
 import scala.concurrent.duration.DurationLong
+import org.typelevel.ci._
 
 // Integration test requiring a database
 // docker run --name igludb -e POSTGRES_PASSWORD=iglusecret -e POSTGRES_DB=testdb -p 5432:5432 -d postgres
@@ -78,10 +79,10 @@ class ServerSpec extends Specification {
     val reqs = List(
       Request[IO](Method.PUT, uri"/com.acme/first/jsonschema/1-0-0")
         .withEntity(json"""{"properties": {}}""")
-        .withHeaders(Header("apikey", InMemory.DummySuperKey.toString)),
-      Request[IO](Method.GET, uri"/").withHeaders(Header("apikey", InMemory.DummySuperKey.toString)),
+        .withHeaders(Header.Raw(ci"apikey", InMemory.DummySuperKey.toString)),
+      Request[IO](Method.GET, uri"/").withHeaders(Header.Raw(ci"apikey", InMemory.DummySuperKey.toString)),
       Request[IO](Method.GET, uri"/com.acme/first/jsonschema/1-0-0")
-        .withHeaders(Header("apikey", InMemory.DummySuperKey.toString)),
+        .withHeaders(Header.Raw(ci"apikey", InMemory.DummySuperKey.toString)),
       Request[IO](Method.GET, uri"/com.acme/first/jsonschema/1-0-0")
     )
 
@@ -118,9 +119,9 @@ class ServerSpec extends Specification {
     val reqs = List(
       Request[IO](Method.POST, uri"/".withQueryParam("isPublic", "true"))
         .withEntity(schema)
-        .withHeaders(Header("apikey", InMemory.DummySuperKey.toString)),
+        .withHeaders(Header.Raw(ci"apikey", InMemory.DummySuperKey.toString)),
       Request[IO](Method.DELETE, uri"/com.acme/first/jsonschema/1-0-0")
-        .withHeaders(Header("apikey", InMemory.DummySuperKey.toString)),
+        .withHeaders(Header.Raw(ci"apikey", InMemory.DummySuperKey.toString)),
       Request[IO](Method.GET, uri"/")
     )
 
