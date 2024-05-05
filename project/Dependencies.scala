@@ -38,7 +38,7 @@ object Dependencies {
     val Snakeyaml  = "2.2"
     val Guava      = "32.0.0-jre"
 
-    val Specs2  = "4.5.1"
+    val Specs2  = "4.20.6"
     val Logback = "1.2.3"
   }
 
