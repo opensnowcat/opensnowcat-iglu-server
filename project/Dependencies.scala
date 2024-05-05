@@ -21,7 +21,7 @@ object Dependencies {
     val SchemaDdl  = "0.22.2"
     val IgluClient = "1.1.1"
 
-    val Http4s     = "0.21.34"
+    val Http4s     = "0.23.27"
     val Rho        = "0.21.0"
     val Doobie     = "0.13.4"
     val Decline    = "2.4.1"
