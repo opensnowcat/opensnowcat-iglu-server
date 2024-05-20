@@ -18,7 +18,7 @@ object Dependencies {
 
   object V {
     val IgluCore   = "1.1.3"
-    val SchemaDdl  = "0.22.2"
+    val SchemaDdl  = "0.23.0"
     val IgluClient = "1.1.1"
 
     val Http4s     = "0.23.27"
@@ -26,15 +26,15 @@ object Dependencies {
     val Doobie     = "0.13.4"
     val Decline    = "2.4.1"
     val Log4Cats   = "1.7.0"
-    val Circe      = "0.14.6"
+    val Circe      = "0.14.7"
     val CirceFs2   = "0.13.0"
     val Refined    = "0.11.1"
     val PureConfig = "0.15.0"
-    val SwaggerUi  = "5.15.1"
+    val SwaggerUi  = "5.15.2-1"
     val Slf4j      = "2.0.13"
     val ScalaCache = "0.28.0"
     val Postgresql = "42.7.3"
-    val Jackson    = "2.17.0"
+    val Jackson    = "2.17.1"
     val Snakeyaml  = "2.2"
     val Guava      = "32.0.0-jre"
 
