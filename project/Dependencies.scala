@@ -28,7 +28,7 @@ object Dependencies {
     val Log4Cats   = "1.7.0"
     val Circe      = "0.14.7"
     val CirceFs2   = "0.13.0"
-    val Refined    = "0.11.1"
+    val Refined    = "0.11.2"
     val PureConfig = "0.15.0"
     val SwaggerUi  = "5.17.11"
     val Slf4j      = "2.0.13"
